@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Lance" default="build">
+	<property name="Flex.dir" location="C:\Program Files (x86)\Adobe\Flex Builder 3 Plug-in" />
+	<property name="FlexSDK.dir" location="E:\Setting\flex_sdk_3.2.0.3958" />
+	<property name="AsDocs.dir" location="${FlexSDK.dir}\bin\asdoc.exe" />
+	<property name="AsDocs.lib" location="${FlexSDK.dir}\frameworks\libs\player\10" />
+	<property name="AppClasses.dir" location=".\src" />
+	<property name="AppClasses.path" location=".\src" />
+	<property name="Doc.dir" location="E:\Docs\Reference" />
+	<property name="Output.dir" location="${Doc.dir}\Lance" />
+	<property name="Output.dir2" location=".\ASDoc" />
+	<property name="Lib_External" location=".\lib" />
+	<property name="Lib_FL" location="C:\Program Files (x86)\Adobe\Adobe Flash CS3\en\Configuration\ActionScript 3.0\Classes" />
+	<property name="Lib_MX" location="${FlexSDK.dir}\frameworks\libs" />
+
+	<target name="build" depends="asdoc" description="full build" />
+
+	<target name="asdoc">
+		<delete dir="${Output.dir}" failOnError="false" includeEmptyDirs="true" />
+		<mkdir dir="${Output.dir}" />
+
+		<exec executable="${AsDocs.dir}">
+			<arg line='-source-path ${AppClasses.dir}' />
+			<arg line='-doc-sources ${AppClasses.path}' />
+			<arg line="-library-path ${Lib_External}" />
+			<arg line="-library-path ${Lib_MX}" />
+			<arg line='-window-title "SSen Classes"' />
+			<arg line='-main-title "SSen Classes title"' />
+			<arg line='-output ${Output.dir}' />
+		</exec>
+
+		<!--
+		<delete dir="${Output.dir2}" failOnError="false" includeEmptyDirs="true"/>
+		<mkdir dir="${Output.dir2}"/>
+		<copy todir="${Output.dir2}">
+			<fileset dir="${Output.dir}">
+				<include name="**/*"/>
+					제외 목록
+					<exclude name="**/subdirectory1/*"/>
+				
+			</fileset>
+		</copy>
+		-->
+	</target>
+
+	<target name="upload">
+		<ftp remotedir="/home/ssen/ssen.name/develop/lance/showcase/" password="ssen2008" server="ssen.name" userid="ssen" passive="yes">
+			<fileset dir="./bin">
+				<include name="showcase/*.*" />
+				<include name="skin/*.*" />
+				<include name="*.swf" />
+				<include name="showcase.php" />
+			</fileset>
+		</ftp>
+		<ftp remotedir="/home/ssen/ssen.name/develop/lance/asdoc/" password="ssen2008" server="ssen.name" userid="ssen" passive="yes">
+			<fileset dir="${Output.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</ftp>
+		<ftp remotedir="/home/ssen/ssen.name/develop/lance/bin/" password="ssen2008" server="ssen.name" userid="ssen" passive="yes">
+			<fileset dir="./bin">
+				<include name="lance.swc" />
+			</fileset>
+		</ftp>
+		<ftp remotedir="/home/ssen/ssen.name/develop/lance/" password="ssen2008" server="ssen.name" userid="ssen" passive="yes">
+			<fileset dir="./bin">
+				<include name="index.php" />
+			</fileset>
+		</ftp>
+	</target>
+</project>
